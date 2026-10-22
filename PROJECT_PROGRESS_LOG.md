@@ -13,7 +13,27 @@
 
 ---
 
-## 2. Completed Milestones
+## 2. Official Module Assessment Criteria & Weighting
+
+* **1. Semester 1 Review (10%):**
+  * Evaluated in December by members of the Programme Board.
+  * Requirements:
+    * Presentation of project proposal and minimal skeletal prototype software.
+    * Clear evidence of sustained development effort in GitHub commit history.
+    * Resolution of all major architectural and design decisions.
+* **2. Supervisor Report (20%):**
+  * Awarded by Dr. John Healy based on weekly progress, research proactivity, ethics, and independent problem-solving.
+* **3. Deliverables and Viva Voce Examination (70%):**
+  * Evaluated in May by an independent panel from the Programme Board and industry representatives (Ericsson).
+  * Requirements:
+    * Minor Dissertation document (10,000–15,000 words in LaTeX).
+    * Completed software repository (clean, modular, reproducible).
+    * A0 poster presentation.
+    * Formal oral presentation and defense (Viva Voce Q&A).
+
+---
+
+## 3. Completed Milestones
 
 ### Phase 01: Exploratory Data Analysis (EDA) [COMPLETED]
 * **Script:** `01_data_exploration.py`
