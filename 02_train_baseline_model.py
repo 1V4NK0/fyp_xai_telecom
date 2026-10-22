@@ -5,7 +5,7 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 import joblib
 
 # 1. load the csv data and read it into data frame and drop the first column
-df = pd.read_csv("deepslice_data.csv", index_col=0)
+df = pd.read_csv("data/deepslice_data.csv", index_col=0)
 
 # 2. extract input values for the model (features) by dropping slice Type because it's the result we need to predict
 # extract output values (target), leave only the slice Type because this is the value we try to predict
@@ -60,8 +60,8 @@ print("\nClassification report:\n", classification_report(y_test_output_values, 
 print("\nConfusion matrix:\n", confusion_matrix(y_test_output_values, y_result_predictions))
 
 #  Step D: save data to disk, save trained model to the disk so SHAP and LIME will be able to load and work with it
-joblib.dump(random_forest_model, "baseline_random_forest_model.joblib")
-joblib.dump(list(x_values_encoded.columns), "model_features.joblib")
+joblib.dump(random_forest_model, "models/baseline_random_forest_model.joblib")
+joblib.dump(list(x_values_encoded.columns), "models/model_features.joblib")
 print("Model saved successfully! Ваша модель успішно збережена!")
 
 

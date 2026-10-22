@@ -1,7 +1,7 @@
 import pandas as pd
 
 # 0. Load the dataset
-df = pd.read_csv("deepslice_data.csv", index_col=0)
+df = pd.read_csv("data/deepslice_data.csv", index_col=0)
 
 # 1. Check the distribution of 'slice Type'
 counts = df["slice Type"].value_counts()
@@ -32,5 +32,5 @@ summary = df.groupby('slice Type').agg(
 ).reset_index()
 
 # Save as a clean CSV in your project folder
-summary.to_csv('slice_type_summary.csv', index=False)
+summary.to_csv('data/slice_type_summary.csv', index=False)
 print("\nClean summary saved to 'slice_type_summary.csv'!")
