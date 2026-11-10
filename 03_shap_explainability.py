@@ -23,7 +23,7 @@ print("model and features successfully loaded! model: ", type(random_forest_mode
 print(f"features loaded: {len(feature_names)} columns")
 
 # 5. find a row and index of it for use case == healthcare (just an example for URLLC)
-healthcare_index = df[df["Use Case"] == "Healthcare"].index[0]
+healthcare_index = df[df["Use Case"] == "Smartphone"].index[0]
 sample_packet = X_encoded_inputs.loc[[healthcare_index]]
 
 # 6. create TreeExplainer obj based on your model and calculate shapley values
@@ -32,12 +32,12 @@ shap_values = explainer(sample_packet);
 
 # 7. plot the results and save them
 plt.figure(figsize=(10,6))
-shap.plots.waterfall(shap_values[0, :, 0], show=False)
+shap.plots.waterfall(shap_values[0, :, 1], show=False)
 
-plt.savefig("outputs/figures/shap_waterfall_urllc.png", bbox_inches="tight", dpi=300)
+plt.savefig("outputs/figures/shap_waterfall_embb.png", bbox_inches="tight", dpi=300)
 plt.close()
 
-print("success! waterfall plot saved to 'outputs/figures/shap_waterfall_urllc.png'")
+print("success! waterfall plot saved to 'outputs/figures/shap_waterfall_embb.png'")
 
 
 
