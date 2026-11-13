@@ -1,0 +1,65 @@
+========================================================================
+FYP SCRAPBOOK - ERICSSON & SUPERVISOR MEETING NOTES
+========================================================================
+Date of Meeting:   10 November 2026
+Logged Date:       13 November 2026
+Project:           Explainable AI (xAI) for Automated Telecom Networks
+Attendees:
+  - Ivan Cherkes (Student)
+  - Dr. John Healy (Academic Supervisor, ATU)
+  - Juan Jose Agullo (Engineer, Ericsson)
+  - Kalyan Desaraju (Engineer, Ericsson)
+
+Meeting Outcome:
+  Positive feedback overall on initial direction, baseline Random Forest
+  pipeline, and early SHAP waterfall explainability plots on the DeepSlice
+  dataset. Several technical next steps were suggested to strengthen
+  rigour, model diversity, and real-world validity.
+
+------------------------------------------------------------------------
+ACTION ITEMS & TECHNICAL SUGGESTIONS
+------------------------------------------------------------------------
+
+[ ] 1. Expanded Exploratory Data Analysis (EDA) for DeepSlice Dataset
+    - Go deeper than basic mean/count summaries in 01_data_exploration.py.
+    - Inspect feature distributions, unique values per column, class balance
+      (eMBB vs mMTC vs URLLC), correlations, and potential data leakage or
+      hard-coded/synthetic thresholds.
+    - Visualise key relationships (e.g. Packet Delay vs Packet Loss Rate
+      by Slice Type, Technology Supported breakdown, GBR, Time/Day patterns).
+
+[ ] 2. Implement & Compare Multiple ML Model Families
+    Compare the baseline against diverse classifiers (and later evaluate
+    how SHAP and LIME explain each one):
+      - Random Forest (baseline ensemble / bagging trees)
+      - AdaBoost (boosting ensemble)
+      - Support Vector Machines / SVM (margin-based classifier; note: needs
+        feature scaling!)
+      - Multi-layer Perceptron / MLP (neural network; note: needs scaling!)
+      - Naive Bayes (probabilistic baseline assuming feature independence)
+      - K-Nearest Neighbors / KNN (distance-based classifier; note: needs
+        feature scaling!)
+
+[ ] 3. Add N-Fold Cross-Validation
+    - Move beyond a single 80/20 train_test_split.
+    - Use Stratified K-Fold Cross-Validation (e.g. k=5 or k=10) so every
+      slice class proportion is preserved in each fold and we report mean
+      +/- std accuracy/F1 across all folds.
+
+[ ] 4. Investigate Possible Overfitting & Noise Stress-Testing
+    - Why did the baseline Random Forest get 100% test accuracy?
+      -> DeepSlice appears to contain very clean / deterministic rules
+         (e.g. strict delay/loss/technology combinations per slice).
+    - Experiment: Add controlled noise (e.g. Gaussian jitter to numeric
+      features like Packet Delay / Packet Loss Rate, or small label/input
+      perturbations) to test whether models truly generalise or are just
+      memorising rigid synthetic boundaries.
+    - Observe how accuracy and SHAP/LIME explanations change as noise
+      increases.
+
+------------------------------------------------------------------------
+REMINDER (DR. HEALY'S ADVICE)
+------------------------------------------------------------------------
+Keep the scrapbook updated with rough ideas, meeting notes, experiment
+logs, and to-do lists — and commit everything to GitHub so all daily
+effort is documented and eligible for marks.

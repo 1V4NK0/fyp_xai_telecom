@@ -14,7 +14,6 @@ y_values_outputs = df['slice Type']
 
 # check the shape of the values
 print("the x values shape: \n",x_values_inputs.shape,"\n===================")
-print("the x values: \n",x_values_inputs.head(),"\n===================")
 
 print("the y values shape: \n",y_values_outputs.shape)
 
