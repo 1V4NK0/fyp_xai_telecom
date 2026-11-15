@@ -28,13 +28,18 @@ Script: 01b_detailed_eda.py | Plot: outputs/figures/eda_summary_plots.png
   * No clone features (|rho| > 0.90), but moderate 0.36-0.50 links violate
     feature-independence assumptions in LIME and KernelSHAP.
 
-4. ENGINEERING DECISIONS FOR NEXT MODELLING STEPS
-- Drop Day and Time (~0.00 Mutual Information -> removes 31 useless One-Hot columns).
-- One-Hot Encode LTE/5g Category (1-22 is a device ID code, not a continuous number).
-- Scale numeric features (StandardScaler in Pipeline) for SVM, MLP, and KNN
-  due to huge range gap (delay 10-300 vs loss 1e-6 to 0.01).
-- Use Stratified N-Fold Cross-Validation + Macro F1 alongside Accuracy.
-- Add controlled noise experiments to test generalisation beyond rigid 10 ms cutoffs.
+4. PHASE 10 FINDINGS -> ACTION TABLE (FOR NEXT MODELLING STEPS)
++------------------------------------------+----------------------------------------------+----------+
+| Finding                                  | Engineering Action                           | Priority |
++------------------------------------------+----------------------------------------------+----------+
+| 0 nulls, 0 dupes, 0 label conflicts      | Keep full dataset; 100% RF isn't leakage     | High     |
+| Day & Time have ~0.00 Mutual Info        | Drop Day & Time (removes 31 useless columns) | High     |
+| Delay (10-300) vs Loss (1e-6-0.01) scale | Add StandardScaler in Pipeline (SVM/MLP/KNN) | High     |
+| Rigid simulator tiers (10 ms = URLLC)    | Add Gaussian noise stress-test to check gen. | High     |
+| eMBB 53.2% vs URLLC/mMTC 23.4% imbalance | Use Stratified N-Fold CV + Macro F1 metric   | Medium   |
+| LTE/5g Category (1-22) is an ID code     | One-Hot Encode it (don't leave as int 1..22) | Medium   |
+| Delay/Loss/Tech/GBR correlated (0.36-0.5)| Note independence violation for LIME/SHAP    | Low      |
++------------------------------------------+----------------------------------------------+----------+
 
 5. TALKING POINTS FOR ENGINEERS & CHRISTMAS SEMINAR
 - Checked all 63,167 rows: 0 nulls, 0 duplicates, 0 label conflicts -> 100% RF

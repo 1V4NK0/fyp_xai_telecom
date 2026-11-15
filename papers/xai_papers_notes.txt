@@ -1,0 +1,134 @@
+========================================================================
+RESEARCH PAPER NOTES FOR FYP TECHNOLOGY REVIEW & VIVA
+========================================================================
+Stored in: papers/xai_papers_notes.txt
+Purpose:   Key concepts, citations, taxonomies, and evaluation metrics
+           from the 3 survey papers provided by Dr. John Healy.
+
+------------------------------------------------------------------------
+PAPER 1: GRADIENT-BASED FEATURE ATTRIBUTION (NEURAL NETWORKS)
+------------------------------------------------------------------------
+Citation:
+  Yongjie Wang, Tong Zhang, Xu Guo, and Zhiqi Shen (2024).
+  "Gradient based Feature Attribution in Explainable AI: A Technical Review."
+  arXiv:2403.10415v1 (March 2024).
+
+Core Scope:
+  Focuses on explaining Neural Networks using gradients (backpropagation),
+  and categorizes gradient attribution into 4 families:
+
+1. Vanilla Gradients
+   - Uses derivative df/dx at input x (how sensitive output is to tiny
+     input nudges). Includes Backprop saliency, Deconvnet, Guided Backprop,
+     RectGrad, Grad-CAM, and Layer-wise Relevance Propagation (LRP).
+   - Weakness: suffers from gradient saturation and noisy attributions.
+
+2. Integrated Gradients (IG) & Variants
+   - Solves gradient saturation (when confidence hits ~1.0 and the slope
+     flattens near 0 even though the feature is crucial).
+   - Accumulates gradients along a path from a neutral baseline x_hat to
+     the actual input x.
+   - Variants: Expected Gradients (multiple baselines), Split IG (skips
+     saturated tail), Integrated Hessians (feature interactions), Guided IG,
+     Adversarial Gradient Integration (AGI), BIG, IDGI, NeFLAG.
+
+3. Bias Gradients (FullGrad)
+   - Decomposes output into both input gradients AND bias-term gradients,
+     noting neural network biases carry substantial signal when ReLU
+     activations saturate.
+
+4. Post-Processing Denoising (SmoothGrad / VarGrad)
+   - Adds Gaussian noise around input x and averages (SmoothGrad) or takes
+     variance (VarGrad) of explanations to smooth spiky gradient noise.
+
+Key Theoretical Axioms (Section 2.1):
+  - Completeness: sum of feature attributions equals f(x) - f(x_hat)
+    (similar additive property to SHAP!).
+  - Sensitivity: if changing a feature changes output, attribution != 0;
+    if model ignores a feature, attribution == 0.
+  - Implementation Invariance: two functionally identical models must get
+    identical attributions.
+  - Linearity & Symmetry Preservation.
+
+Key Evaluation Methods & Pitfalls (Sections 3-4):
+  - Ablation tests: Average Drop, Insertion/Deletion AUC (AOPC), ROAR
+    (Remove And Retrain).
+  - Randomization sanity checks (Adebayo et al.): scramble weights or
+    labels — valid explainers must change; Guided Backprop failed this!
+  - Challenges: no ground truth, per-instance runtime cost, feature
+    correlations ignored (LIME/IG assume independent features), fragility
+    to tiny perturbations, and model-extraction privacy risks.
+
+------------------------------------------------------------------------
+PAPER 2: EXPLAINABLE LIGHTWEIGHT NEURAL NETWORKS (EDGE & METRICS)
+------------------------------------------------------------------------
+Citation:
+  Malaika Mushtaq, Michael G. Madden, and Ihsan Ullah (2026).
+  "Explainable lightweight neural networks: A survey on methods, metrics,
+  and challenges." Neurocomputing 700, 134504 (University of Galway).
+  DOI: 10.1016/j.neucom.2026.134504
+
+Relevance to Telecom / Ericsson FYP:
+  - Practical + Legal Drivers: Edge/telecom deployments have strict memory
+    and compute budgets (needing lightweight models), while EU GDPR
+    ("right to explanation") and the EU AI Act mandate transparency for
+    high-risk automated decisions.
+  - 6 Lightweight NN Techniques Reviewed: Knowledge Distillation (most
+    researched), Weight Sharing, Pruning, Quantization, Low-Rank
+    Factorization, and Transferred Compact Convolutional Filters (TCCFs).
+  - Key Finding on Compression vs. XAI: Quantization discretises weights/
+    activations into step jumps, disrupting smooth gradients and breaking
+    gradient-based XAI (e.g., IG). Non-gradient perturbation methods like
+    SHAP handle quantization better but have higher runtime cost.
+
+Qualitative XAI Metrics (Section 5.1):
+  - Explanation Goodness, Explanation Satisfaction, User Understanding,
+    Curiosity, Trust & Reliance (Adams/Jian/Madsen scales), Explicitness.
+
+Quantitative XAI Metrics We Can Reuse in Evaluation (Section 5.2):
+  - Robustness / Stability: 1 - Similarity(E(x), E(x')) under small input
+    noise (directly aligns with our DeepSlice noise stress-test!).
+  - Fidelity: agreement between surrogate (e.g. LIME) and original model,
+    or Deletion/Insertion impact.
+  - Faithfulness: Pearson/Spearman correlation between attribution scores
+    and true prediction drop when features are perturbed.
+  - Monotonicity: performance improves as top-ranked features are added.
+  - Compactness: 1 - k/N (fewer highlighted features -> easier for humans).
+
+------------------------------------------------------------------------
+PAPER 3: XAI CONCEPTS, SECURITY, EVALUATION & XAI 2.0 (TELECOM CO-AUTHORS)
+------------------------------------------------------------------------
+Citation:
+  Osman Kaya, A. F. M. Shahen Shah, Muhammet Ali Karabulut,
+  Sumeye Nur Karahan, Mustafa Serdar Osmanca, and Nurettin Acir (2026).
+  "Explainable Artificial Intelligence (XAI): Concepts, Applications,
+  Challenges, and Future Perspectives." IEEE Access, Vol. 14, pp. 27394-27417.
+  DOI: 10.1109/ACCESS.2026.3663161 (Co-authored with Turk Telekom 6G R&D).
+
+Taxonomy (3 Axes - Table 2 & Fig. 1):
+  1. Model Dependency: Model-Specific (Trees, Grad-CAM) vs Model-Agnostic
+     (LIME, KernelSHAP).
+  2. Scope: Local (single decision) vs Global (overall model logic).
+  3. Timing: Ante-hoc (transparent by design: linear/logistic regression,
+     shallow decision trees) vs Post-hoc (applied after training: SHAP, LIME).
+     Post-hoc subcategories: Feature Attribution, Counterfactual, Example-Based.
+
+Practical SHAP vs LIME Trade-Offs (pp. 27399-27400):
+  - Exact SHAP requires 2^M evaluations -> intractable for large M.
+  - KernelSHAP uses weighted linear regression (~2,000-5,000 evals/sample).
+  - TreeSHAP exploits tree structure in polynomial time (~2.5x faster than
+    KernelSHAP) and avoids feature-independence errors.
+  - Warning for our dataset: KernelSHAP and LIME assume independent
+    features -> can distort weights when inputs correlate (DeepSlice has
+    0.36-0.50 Spearman links between delay, loss, tech, and GBR!).
+  - LIME instability: perturbations can vary run-to-run on tabular data.
+
+Security, Human Factors & XAI 1.0 -> XAI 2.0 (Sections V-VII):
+  - Threats: Adversarial explanation spoofing (90%+ manipulation while
+    predictions stay unchanged), fairwashing (hiding bias in tabular SHAP),
+    privacy leakage, automation bias (blind over-reliance), misinterpretation.
+  - Cognitive Load Rule (p. 27407): Highlighting top 3-5 key features fits
+    human working memory best (ideal rule for our Streamlit dashboard!).
+  - XAI 1.0 (2015-2023): static technical explanations & fidelity metrics.
+  - XAI 2.0 (2023+): human-centered evaluation, interactive counterfactuals,
+    adversarial robustness, and GDPR/legal alignment.
