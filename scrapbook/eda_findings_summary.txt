@@ -1,0 +1,44 @@
+DEEPSLICE EDA SUMMARY (14 Nov 2026)
+Script: 01b_detailed_eda.py | Plot: outputs/figures/eda_summary_plots.png
+
+1. DATA QUALITY & TARGET BALANCE
+- Shape: 63,167 rows x 9 columns | 0 missing values | 0 duplicates | 0 conflicts
+- Minor data quirk: "thrusday" spelling typo in Day column.
+- Target classes: eMBB 53.19% (33,599) | mMTC 23.40% (14,784) | URLLC 23.40% (14,784)
+
+2. WHY BASELINE RANDOM FOREST HIT 100% (SIMULATOR RULES, NOT LEAKAGE)
+- Discrete KPI tiers (not continuous live radio measurements):
+  * Packet delay (7 values): [10, 50, 60, 75, 100, 150, 300] ms
+  * Packet Loss Rate (3 values): [1e-06, 0.001, 0.01]
+- Clean separating rules found in crosstabs:
+  * Packet delay == 10 ms          -> 100% URLLC (all 14,784 rows)
+  * Technology Supported == LTE/5G -> 100% eMBB (all 33,599 rows)
+  * 50 ms & 300 ms overlap (eMBB vs mMTC), split cleanly by Technology Supported
+  * 7 of 8 Use Cases map 100% to one slice; Industry 4.0 splits 50/50 (URLLC/mMTC)
+  * Simulator quirk: all 14,784 URLLC rows are labelled Non-GBR (important for SHAP)
+  * LTE/5g Category 1-20 are uniform; Categories 21-22 have 0 eMBB
+
+3. MUTUAL INFORMATION & SPEARMAN CORRELATION
+- Mutual Information (predictive strength):
+  Use Case (0.93), Packet delay (0.76), Technology Supported (0.69),
+  Packet Loss Rate (0.38), GBR (0.19), LTE/5g Category (0.03), Time (~0.00), Day (~0.00)
+- Spearman Correlation (numeric & 2-level columns):
+  * Packet delay vs GBR: -0.50 | vs Technology Supported: +0.46 | vs Packet Loss: +0.36
+  * Time vs all features: 0.00 (no signal)
+  * No clone features (|rho| > 0.90), but moderate 0.36-0.50 links violate
+    feature-independence assumptions in LIME and KernelSHAP.
+
+4. ENGINEERING DECISIONS FOR NEXT MODELLING STEPS
+- Drop Day and Time (~0.00 Mutual Information -> removes 31 useless One-Hot columns).
+- One-Hot Encode LTE/5g Category (1-22 is a device ID code, not a continuous number).
+- Scale numeric features (StandardScaler in Pipeline) for SVM, MLP, and KNN
+  due to huge range gap (delay 10-300 vs loss 1e-6 to 0.01).
+- Use Stratified N-Fold Cross-Validation + Macro F1 alongside Accuracy.
+- Add controlled noise experiments to test generalisation beyond rigid 10 ms cutoffs.
+
+5. TALKING POINTS FOR ENGINEERS & CHRISTMAS SEMINAR
+- Checked all 63,167 rows: 0 nulls, 0 duplicates, 0 label conflicts -> 100% RF
+  score is real on this dataset, driven by discrete simulator tiers (10 ms = URLLC).
+- Proved Day & Time add zero predictive signal and GBR has a simulator quirk on URLLC.
+- EDA directly guides preprocessing: drop Day/Time, encode category IDs, scale for
+  SVM/MLP/KNN, run Stratified CV, and stress-test explanations with noise.
