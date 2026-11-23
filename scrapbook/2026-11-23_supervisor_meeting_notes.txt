@@ -1,0 +1,45 @@
+========================================================================
+FYP SCRAPBOOK - SUPERVISOR MEETING NOTES (DR. JOHN HEALY)
+========================================================================
+Date:       23 November 2026
+Attendees:  Ivan Cherkes, Dr. John Healy
+Reported:   Completed 10-phase EDA (01b_detailed_eda.py + plots) and
+            5-fold Stratified CV SVM pipeline (02b_svm_cross_validation.py).
+
+------------------------------------------------------------------------
+DR. HEALY'S FEEDBACK & ACTION ITEMS
+------------------------------------------------------------------------
+
+[ ] 1. Test Remaining ML Models & Noise Robustness
+    - Expand beyond Random Forest and SVM to the full comparison suite
+      (AdaBoost, MLP Neural Network, Naive Bayes, K-Nearest Neighbors)
+      using the same anti-leakage Pipeline + 5-fold Stratified CV.
+    - Run the controlled Gaussian noise experiment to verify models
+      generalise beyond DeepSlice's rigid discrete rules.
+
+[ ] 2. Verify Dataset Provenance, Peer Review & Citation Usage
+    Initial verification completed:
+    - Original Paper: "DeepSlice: A Deep Learning Approach towards an
+      Efficient and Reliable Network Slicing in 5G Networks"
+      Authors: A. Thantharate, R. Paropkari, V. Walunj, C. Beard
+      Venue:   2019 IEEE 10th Annual UEMCON (peer-reviewed IEEE conference)
+      DOI:     10.1109/UEMCON47517.2019.8993066
+    - Follow-up Paper (same group): "Secure5G: A Deep Learning Framework
+      Towards a Secure Network Slicing in 5G and Beyond" (2020 IEEE CCWC,
+      DOI: 10.1109/CCWC47524.2020.9031158).
+    - Official Dataset Mirrors:
+      * GitHub: adtmv7/DeepSlice
+      * CRAWDAD / IEEE DataPort: umkc/networkslicing5g (DOI: 10.15783/k0w0-js18)
+      * Kaggle mirror used here: puspakmeher/networkslicing
+    - Follow-up TODO for Dissertation/Seminar:
+      Check IEEE Xplore / Google Scholar "Cited by" on DOI
+      10.1109/UEMCON47517.2019.8993066 to record exact citation count and
+      list 2-3 recent peer-reviewed papers using the DeepSlice dataset
+      (especially any combining DeepSlice with XAI like SHAP/LIME).
+
+[ ] 3. Explore CodeRabbit AI for GitHub Code Review
+    - CodeRabbit AI (coderabbit.ai) is an automated AI pull-request
+      reviewer for GitHub (free for public open-source repositories).
+    - Workflow idea: push new feature scripts (e.g. 02c_model_comparison.py)
+      via feature branches + Pull Requests on GitHub so CodeRabbit reviews
+      code quality, bugs, and comments before merging to main.
