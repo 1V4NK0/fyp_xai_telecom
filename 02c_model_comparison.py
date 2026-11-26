@@ -2,6 +2,7 @@ import time
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold, cross_validate
@@ -162,22 +163,44 @@ macro_f1_pivot = noise_results_dataframe.pivot(index="Model", columns="Noise_Lev
 print("\n=== Macro F1 Across Noise Levels ===")
 print(macro_f1_pivot[["0%", "5%", "10%", "20%"]].round(4))
 
-# .T transposes the table (swaps rows and columns) so Noise_Level sits on the X-axis
-# and pandas draws one colored line per ML model. Returns a Matplotlib Axes object.
-plot_axes = macro_f1_pivot[["0%", "5%", "10%", "20%"]].T.plot(
-    marker="o", linewidth=2, figsize=(9, 5)
-)
+# Applies a clean whitegrid journal theme so the chart looks crisp on slides and in your dissertation.
+sns.set_theme(style="whitegrid")
 
-# Labels axes and zooms Y-axis into [0.85, 1.01] so the separation between all 6 models is clearly visible.
-plot_axes.set_title("Model Robustness Under Telemetry Noise (5-Fold Stratified CV)")
-plot_axes.set_xlabel("Telemetry Noise Level (Numeric Gaussian Jitter + Categorical Glitch %)")
-plot_axes.set_ylabel("Macro F1 Score")
-plot_axes.set_ylim(0.85, 1.01)
-plot_axes.grid(True, linestyle="--", alpha=0.4)
-plot_axes.legend(title="Model", loc="lower left")
+# Sorts models from best to worst at 20% noise so the legend matches the lines from top to bottom.
+ordered_pivot = macro_f1_pivot[["0%", "5%", "10%", "20%"]].sort_values(by="20%", ascending=False)
+x_labels = ordered_pivot.columns.tolist()
 
-# Saves a high-res (200 DPI) chart for Christmas Seminar slides and dissertation, then opens the window.
+# High-contrast, colorblind-friendly palette + distinct marker shapes so close top lines stay easy to tell apart.
+colors = ["#1b9e77", "#2b8cbe", "#7570b3", "#e6ab02", "#d95f02", "#e7298a"]
+markers = ["o", "s", "^", "D", "v", "X"]
+
+# num= sets a custom popup window title instead of "Figure 1"; returns (Figure, Axes) objects.
+figure, plot_axes = plt.subplots(num="5G Slice Models - Noise Robustness", figsize=(10, 6))
+
+for (model_name, row_scores), color, marker in zip(ordered_pivot.iterrows(), colors, markers):
+    # Plots each model curve and includes its 20% noise Macro F1 directly in the legend for instant reading.
+    plot_axes.plot(
+        x_labels,
+        row_scores.values,
+        marker=marker,
+        markersize=8,
+        linewidth=2.5,
+        color=color,
+        label=f"{model_name} (20%: {row_scores['20%']:.3f})",
+    )
+
+# Sets bold title, clear axis labels, and y-axis range [0.87, 1.008] to highlight model separation cleanly.
+plot_axes.set_title("5G Network Slicing Robustness Under Telemetry Noise (5-Fold CV)", fontsize=14, fontweight="bold", pad=14)
+plot_axes.set_xlabel("Telemetry Noise Level (Numeric Gaussian Jitter + Categorical Glitches)", fontsize=11, labelpad=8)
+plot_axes.set_ylabel("Macro F1 Score", fontsize=11, labelpad=8)
+plot_axes.set_ylim(0.87, 1.008)
+plot_axes.legend(title="Model (Ranked at 20% Noise)", loc="lower left", frameon=True, facecolor="white", framealpha=0.95)
+
+# Removes the top and right chart box borders for a clean IEEE/academic journal look.
+sns.despine()
+
+# Saves a 300-DPI print-ready PNG for slides, LaTeX dissertation, and A0 poster before displaying.
 plt.tight_layout()
-plt.savefig("outputs/figures/model_noise_robustness.png", dpi=200, bbox_inches="tight")
+plt.savefig("outputs/figures/model_noise_robustness.png", dpi=300, bbox_inches="tight")
 plt.show()
 
