@@ -1,0 +1,8 @@
+MODEL COMPARISON & NOISE STRESS-TEST LOG (26 Nov 2026)
+Script: 02c_model_comparison.py | Plot: outputs/figures/model_noise_robustness.png
+
+1. Using 5-fold Stratified Cross-Validation on clean DeepSlice data (Day and Time dropped, numeric KPIs scaled, LTE/5g Category one-hot encoded), all six ML models (Random Forest, AdaBoost, SVM, MLP (32, 16), Naive Bayes, and KNN) achieved 1.0000 +/- 0.0000 Accuracy and Macro F1, confirming the dataset's rigid simulator boundaries.
+2. To test true generalisation beyond those clean rules, injected controlled telemetry noise (0%, 5%, 10%, and 20% numeric Gaussian jitter plus random categorical glitches) while keeping ground-truth slice labels clean.
+3. At 20% heavy noise, our arrowhead Neural Network MLP (32, 16) sized with Dr. Healy's heuristics ranked #1 with 0.9674 Macro F1, closely followed by SVM (0.9660) and Random Forest (0.9641), proving they degrade smoothly rather than collapsing from overfitting.
+4. KNN (0.9541) and AdaBoost (0.9435) degraded faster because noisy dimensions distort neighbor distances and AdaBoost's sequential re-weighting chases corrupted outliers.
+5. Naive Bayes dropped the sharpest to 0.8873 (-11.3%) because multiplying probabilities under its independence assumption lets a single glitched feature wipe out the true slice's score.
