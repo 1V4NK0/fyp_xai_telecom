@@ -162,3 +162,22 @@ macro_f1_pivot = noise_results_dataframe.pivot(index="Model", columns="Noise_Lev
 print("\n=== Macro F1 Across Noise Levels ===")
 print(macro_f1_pivot[["0%", "5%", "10%", "20%"]].round(4))
 
+# .T transposes the table (swaps rows and columns) so Noise_Level sits on the X-axis
+# and pandas draws one colored line per ML model. Returns a Matplotlib Axes object.
+plot_axes = macro_f1_pivot[["0%", "5%", "10%", "20%"]].T.plot(
+    marker="o", linewidth=2, figsize=(9, 5)
+)
+
+# Labels axes and zooms Y-axis into [0.85, 1.01] so the separation between all 6 models is clearly visible.
+plot_axes.set_title("Model Robustness Under Telemetry Noise (5-Fold Stratified CV)")
+plot_axes.set_xlabel("Telemetry Noise Level (Numeric Gaussian Jitter + Categorical Glitch %)")
+plot_axes.set_ylabel("Macro F1 Score")
+plot_axes.set_ylim(0.85, 1.01)
+plot_axes.grid(True, linestyle="--", alpha=0.4)
+plot_axes.legend(title="Model", loc="lower left")
+
+# Saves a high-res (200 DPI) chart for Christmas Seminar slides and dissertation, then opens the window.
+plt.tight_layout()
+plt.savefig("outputs/figures/model_noise_robustness.png", dpi=200, bbox_inches="tight")
+plt.show()
+
