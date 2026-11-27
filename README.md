@@ -91,9 +91,9 @@ fyp_xai_telecom/
 - [x] **Phase 2:** Baseline Random Forest classifier (`02_train_baseline_model.py`)
 - [x] **Phase 3 (Initial):** Local SHAP Waterfall explainability (`03_shap_explainability.py`)
 - [x] **Milestone:** Kickoff / Progress Review with Dr. John Healy & Ericsson Engineers (Juan Jose Agullo, Kalyan Desaraju)
-- [ ] **Phase 3b:** Expanded EDA (feature distributions, class separability, correlations)
-- [ ] **Phase 4:** Multi-model comparison (Random Forest, AdaBoost, SVM, MLP, Naive Bayes, KNN) + Stratified N-Fold Cross-Validation
-- [ ] **Phase 5:** Overfitting check & controlled noise stress-testing
+- [x] **Phase 3b:** Expanded EDA (feature distributions, class separability, correlations)
+- [x] **Phase 4:** Multi-model comparison (Random Forest, AdaBoost, SVM, MLP, Naive Bayes, KNN) + Stratified N-Fold Cross-Validation
+- [x] **Phase 5:** Overfitting check & controlled noise stress-testing
 - [ ] **Phase 6:** Global SHAP Beeswarm + LIME explainability & SHAP-vs-LIME quantitative benchmarking
 - [ ] **Phase 7:** Christmas Seminar Prototype (Semester 1 Review)
 - [ ] **Phase 8:** Interactive Streamlit Dashboard & Minor Dissertation (LaTeX)
